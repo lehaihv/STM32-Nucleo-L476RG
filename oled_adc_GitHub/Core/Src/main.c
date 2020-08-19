@@ -107,7 +107,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   SSD1306_Init (); // initialize the diaply
   SSD1306_GotoXY (8,0); // goto 10, 10
-  SSD1306_Puts ("Voltmeter", &Font_11x18, 1); // print Voltmeter
+  SSD1306_Puts ("Voltmeter", &Font_11x18, 1); // print Voltmeter_Intel Nuc
   SSD1306_UpdateScreen(); // update screen
   //HAL_Delay(3000);
   SSD1306_GotoXY (0,20);
