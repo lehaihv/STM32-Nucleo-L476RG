@@ -465,7 +465,7 @@ int main(void)
  80005a0:	2100      	movs	r1, #0
  80005a2:	2008      	movs	r0, #8
  80005a4:	f000 fc6e 	bl	8000e84 <SSD1306_GotoXY>
-  SSD1306_Puts ("Voltmeter", &Font_11x18, 1); // print Voltmeter_Back to Nuc
+  SSD1306_Puts ("Voltmeter", &Font_11x18, 1); // print Voltmeter_Back to Intel Nuc
  80005a8:	2201      	movs	r2, #1
  80005aa:	4981      	ldr	r1, [pc, #516]	; (80007b0 <main+0x230>)
  80005ac:	4881      	ldr	r0, [pc, #516]	; (80007b4 <main+0x234>)
