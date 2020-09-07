@@ -50,8 +50,8 @@ STM32_SDcard.bin \
 all: STM32_SDcard.elf secondary-outputs
 
 # Tool invocations
-STM32_SDcard.elf: $(OBJS) $(USER_OBJS) C:\Users\haihv\Documents\GitHub\STM32-Nucleo-L476RG\SD_Card\STM32L476RGTX_FLASH.ld
-	arm-none-eabi-gcc -o "STM32_SDcard.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\haihv\Documents\GitHub\STM32-Nucleo-L476RG\SD_Card\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32_SDcard.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+STM32_SDcard.elf: $(OBJS) $(USER_OBJS) C:\Users\LE\ HUU\ HAI\Documents\GitHub\STM32-Nucleo-L476RG\SD_Card\STM32L476RGTX_FLASH.ld
+	arm-none-eabi-gcc -o "STM32_SDcard.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\LE HUU HAI\Documents\GitHub\STM32-Nucleo-L476RG\SD_Card\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32_SDcard.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
