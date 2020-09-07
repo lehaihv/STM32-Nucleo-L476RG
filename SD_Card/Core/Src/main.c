@@ -76,6 +76,40 @@ static void MX_SPI2_Init(void);
 uint16_t value_adc = 4096; // adc_value
 float volts = 0;
 char msg[5];
+FATFS fs;  // file system
+FIL fil; // File
+FILINFO fno;
+FRESULT fresult;  // result
+UINT br, bw;  // File read/write count
+
+/**** capacity related *****/
+FATFS *pfs;
+DWORD fre_clust;
+uint32_t total, free_space;
+
+#define BUFFER_SIZE 128
+char buffer[BUFFER_SIZE];  // to store strings..
+
+int i=0;
+
+int bufsize (char *buf)
+{
+	int i=0;
+	while (*buf++ != '\0') i++;
+	return i;
+}
+
+void clear_buffer (void)
+{
+	for (int i=0; i<BUFFER_SIZE; i++) buffer[i] = '\0';
+}
+
+void send_uart (char *string)
+{
+	uint8_t len = strlen (string);
+	HAL_UART_Transmit(&huart2, (uint8_t *) string, len, HAL_MAX_DELAY);  // transmit in blocking mode
+}
+
 /* USER CODE END 0 */
 
 /**

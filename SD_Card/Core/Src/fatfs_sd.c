@@ -7,8 +7,8 @@
 #include "fatfs_sd.h"
 
 
-extern SPI_HandleTypeDef 	hspi1;
-#define HSPI_SDCARD		 	&hspi1
+extern SPI_HandleTypeDef 	hspi2;
+#define HSPI_SDCARD		 	&hspi2
 #define	SD_CS_PORT			GPIOB
 #define SD_CS_PIN			GPIO_PIN_0
 
