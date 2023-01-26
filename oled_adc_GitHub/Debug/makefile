@@ -52,6 +52,12 @@ default.size.stdout \
 OBJDUMP_LIST += \
 oled_adc.list \
 
+OBJCOPY_HEX += \
+oled_adc.hex \
+
+OBJCOPY_BIN += \
+oled_adc.bin \
+
 
 # All Target
 all: main-build
@@ -60,8 +66,8 @@ all: main-build
 main-build: oled_adc.elf secondary-outputs
 
 # Tool invocations
-oled_adc.elf oled_adc.map: $(OBJS) $(USER_OBJS) D:\GitHub\GitHub\STM32-Nucleo-L476RG\oled_adc_GitHub\STM32L476RGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "oled_adc.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\GitHub\GitHub\STM32-Nucleo-L476RG\oled_adc_GitHub\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="oled_adc.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+oled_adc.elf oled_adc.map: $(OBJS) $(USER_OBJS) C:\Users\haihv\Documents\GitHub\STM32-Nucleo-L476RG\oled_adc_GitHub\STM32L476RGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "oled_adc.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\haihv\Documents\GitHub\STM32-Nucleo-L476RG\oled_adc_GitHub\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="oled_adc.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -75,12 +81,22 @@ oled_adc.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
+oled_adc.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "oled_adc.hex"
+	@echo 'Finished building: $@'
+	@echo ' '
+
+oled_adc.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "oled_adc.bin"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
-	-$(RM) default.size.stdout oled_adc.elf oled_adc.list oled_adc.map
+	-$(RM) default.size.stdout oled_adc.bin oled_adc.elf oled_adc.hex oled_adc.list oled_adc.map
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX) $(OBJCOPY_BIN)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'
