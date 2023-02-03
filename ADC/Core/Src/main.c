@@ -65,6 +65,7 @@ char msg[20];
 uint16_t rawValue1,rawValue2;
 float volts1,volts2;
 uint16_t adc[2];
+float volt[2];
 /* USER CODE END 0 */
 
 /**
@@ -128,6 +129,8 @@ int main(void)
 	  sprintf(msg,"%hu\r\n",rawValue2);
 	  HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);*/
 	  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc, 2);
+	  volt[0] = (float)adc[0]*3300/4096;
+	  volt[1] = (float)adc[1]*3300/4096;
 	  HAL_Delay(100);
   }
   /* USER CODE END 3 */
