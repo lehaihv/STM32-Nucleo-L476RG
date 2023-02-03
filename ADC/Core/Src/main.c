@@ -128,7 +128,7 @@ int main(void)
 	  sprintf(msg,"%hu\r\n",rawValue2);
 	  HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);*/
 	  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc, 2);
-	  HAL_Delay(500);
+	  HAL_Delay(100);
   }
   /* USER CODE END 3 */
 }
