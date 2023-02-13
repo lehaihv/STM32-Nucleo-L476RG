@@ -46,6 +46,7 @@ unsigned char __attribute__((section(".myBufSectionRAM"))) buf_ram[128];
 const unsigned char __attribute__((section(".myBufSectionFLASH"))) buf_flash[10] = {
 		0,1,2,3,4,5,6,7,8,9
 };
+#define LOCATE_FUNC __attribute__((section(".mysection")))
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -58,6 +59,11 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void LOCATE_FUNC Blink(uint32_t dlyticks)
+{
+	HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+	HAL_Delay(dlyticks);
+}
 
 /* USER CODE END 0 */
 
@@ -101,6 +107,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  Blink(100);
   }
   /* USER CODE END 3 */
 }
