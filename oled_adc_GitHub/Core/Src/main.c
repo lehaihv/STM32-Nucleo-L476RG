@@ -144,10 +144,10 @@ int main(void)
     //Convert to string and print
     sprintf(msg,"%hu\r\n",value_adc);
 	HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
-	HAL_Delay(1000);
+	HAL_Delay(100);
 	sprintf(msg,"%hu\r\n", (uint16_t )volts);
 	HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
-	HAL_Delay(1000);
+	HAL_Delay(100);
   }
   /* USER CODE END 3 */
 }
