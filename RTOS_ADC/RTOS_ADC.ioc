@@ -1,7 +1,7 @@
 #MicroXplorer Configuration settings - do not modify
 ADC1.Channel-0\#ChannelRegularConversion=ADC_CHANNEL_1
 ADC1.Channel-3\#ChannelRegularConversion=ADC_CHANNEL_2
-ADC1.ClockPrescaler=ADC_CLOCK_ASYNC_DIV1
+ADC1.ClockPrescaler=ADC_CLOCK_ASYNC_DIV8
 ADC1.CommonPathInternal=null|null|null|null
 ADC1.ContinuousConvMode=ENABLE
 ADC1.DiscontinuousConvMode=DISABLE
@@ -14,8 +14,8 @@ ADC1.OffsetNumber-3\#ChannelRegularConversion=ADC_OFFSET_NONE
 ADC1.Overrun=ADC_OVR_DATA_OVERWRITTEN
 ADC1.Rank-0\#ChannelRegularConversion=1
 ADC1.Rank-3\#ChannelRegularConversion=2
-ADC1.SamplingTime-0\#ChannelRegularConversion=ADC_SAMPLETIME_2CYCLES_5
-ADC1.SamplingTime-3\#ChannelRegularConversion=ADC_SAMPLETIME_2CYCLES_5
+ADC1.SamplingTime-0\#ChannelRegularConversion=ADC_SAMPLETIME_47CYCLES_5
+ADC1.SamplingTime-3\#ChannelRegularConversion=ADC_SAMPLETIME_47CYCLES_5
 ADC1.master=1
 CAD.formats=
 CAD.pinconfig=
@@ -227,4 +227,5 @@ VP_SYS_VS_tim1.Mode=TIM1
 VP_SYS_VS_tim1.Signal=SYS_VS_tim1
 board=NUCLEO-L476RG
 boardIOC=true
+rtos.0.ip=FREERTOS
 isbadioc=false
