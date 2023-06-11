@@ -62,6 +62,7 @@ const osThreadAttr_t TaskADC_IN2_attributes = {
 };
 /* USER CODE BEGIN PV */
 uint16_t adc[2];
+char msg[20];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -73,7 +74,8 @@ void StartTaskADC_IN1(void *argument);
 void StartTaskADC_IN2(void *argument);
 
 /* USER CODE BEGIN PFP */
-
+void ADC_Select_CH1(void);
+void ADC_Select_CH2(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -113,8 +115,8 @@ int main(void)
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
   // Get ADC value
-  HAL_ADC_Start(&hadc1);
-  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
+  //HAL_ADC_Start(&hadc1);
+  //HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -227,7 +229,7 @@ static void MX_ADC1_Init(void)
   /* USER CODE END ADC1_Init 0 */
 
   ADC_MultiModeTypeDef multimode = {0};
-  ADC_ChannelConfTypeDef sConfig = {0};
+  //ADC_ChannelConfTypeDef sConfig = {0};
 
   /* USER CODE BEGIN ADC1_Init 1 */
 
@@ -265,9 +267,9 @@ static void MX_ADC1_Init(void)
 
   /** Configure Regular Channel
   */
-  sConfig.Channel = ADC_CHANNEL_1;
+  /*sConfig.Channel = ADC_CHANNEL_1;
   sConfig.Rank = ADC_REGULAR_RANK_1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_47CYCLES_5;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
   sConfig.Offset = 0;
@@ -278,12 +280,12 @@ static void MX_ADC1_Init(void)
 
   /** Configure Regular Channel
   */
-  sConfig.Channel = ADC_CHANNEL_2;
+  /*sConfig.Channel = ADC_CHANNEL_2;
   sConfig.Rank = ADC_REGULAR_RANK_2;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
-  }
+  }*/
   /* USER CODE BEGIN ADC1_Init 2 */
 
   /* USER CODE END ADC1_Init 2 */
@@ -363,7 +365,35 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void ADC_Select_CH1(void)
+{
+  ADC_ChannelConfTypeDef sConfig = {0};
+  sConfig.Channel = ADC_CHANNEL_1;
+  sConfig.Rank = ADC_REGULAR_RANK_1;
+  sConfig.SamplingTime = ADC_SAMPLETIME_24CYCLES_5;
+  sConfig.SingleDiff = ADC_SINGLE_ENDED;
+  sConfig.OffsetNumber = ADC_OFFSET_NONE;
+  sConfig.Offset = 0;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
 
+void ADC_Select_CH2(void)
+{
+  ADC_ChannelConfTypeDef sConfig = {0};
+  sConfig.Channel = ADC_CHANNEL_2;
+  sConfig.Rank = ADC_REGULAR_RANK_1;
+  sConfig.SamplingTime = ADC_SAMPLETIME_24CYCLES_5;
+  sConfig.SingleDiff = ADC_SINGLE_ENDED;
+  sConfig.OffsetNumber = ADC_OFFSET_NONE;
+  sConfig.Offset = 0;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_StartTaskADC_IN1 */
@@ -376,15 +406,22 @@ static void MX_GPIO_Init(void)
 void StartTaskADC_IN1(void *argument)
 {
   /* USER CODE BEGIN 5 */
-  //HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
-  //adc[0] = HAL_ADC_GetValue(&hadc1);
-  //adc[2] = HAL_ADC_Start(&hadc1);
   /* Infinite loop */
   for(;;)
   {
 	//HAL_ADC_PollForConversion(&hadc1, 10);
+	//printf("%s \n", "ADC Input 1");
+	//msg[] = "Hai";
+	ADC_Select_CH1();
+	HAL_ADC_Start(&hadc1);
+	HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
 	adc[0] = HAL_ADC_GetValue(&hadc1);
+	HAL_ADC_Stop(&hadc1);
     osDelay(50);
+    //sprintf(msg,"%hu\r\n",adc[0]);
+    //HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
+    //vTaskDelay( 250 / portTICK_RATE_MS );
+    //printf("%s \n", "ADC Input 1");
   }
   /* USER CODE END 5 */
 }
@@ -404,7 +441,11 @@ void StartTaskADC_IN2(void *argument)
   /* Infinite loop */
   for(;;)
   {
+	ADC_Select_CH2();
+	HAL_ADC_Start(&hadc1);
+	HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
 	adc[1] = HAL_ADC_GetValue(&hadc1);
+    HAL_ADC_Stop(&hadc1);
     osDelay(50);
   }
   /* USER CODE END StartTaskADC_IN2 */
