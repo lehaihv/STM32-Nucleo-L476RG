@@ -27,8 +27,8 @@
 #include "test.h"
 #include "bitmap.h"
 #include "horse_anim.h"
-#include "string.h"
-#include "stdio.h"
+//#include "string.h"
+//#include "stdio.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
