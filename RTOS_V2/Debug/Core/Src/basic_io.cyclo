@@ -1,0 +1,4 @@
+core_cm4.h:2059:26:ITM_SendChar	4
+basic_io.c:49:6:vPrintString	1
+basic_io.c:61:6:vPrintStringAndNumber	1
+basic_io.c:72:5:_write	2

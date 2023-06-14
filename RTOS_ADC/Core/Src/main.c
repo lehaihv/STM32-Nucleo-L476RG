@@ -63,6 +63,8 @@ const osThreadAttr_t TaskADC_IN2_attributes = {
 /* USER CODE BEGIN PV */
 uint16_t adc[2];
 char msg[20];
+int *channel;
+//int channel == 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -74,8 +76,9 @@ void StartTaskADC_IN1(void *argument);
 void StartTaskADC_IN2(void *argument);
 
 /* USER CODE BEGIN PFP */
-void ADC_Select_CH1(void);
-void ADC_Select_CH2(void);
+//void ADC_Select_CH1(void);
+//void ADC_Select_CH2(void);
+void ADC_Select_CH(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -140,10 +143,12 @@ int main(void)
 
   /* Create the thread(s) */
   /* creation of TaskADC_IN1 */
-  TaskADC_IN1Handle = osThreadNew(StartTaskADC_IN1, NULL, &TaskADC_IN1_attributes);
+  *channel = 0;
+  TaskADC_IN1Handle = osThreadNew(StartTaskADC_IN1, (void*) channel, &TaskADC_IN1_attributes);
 
   /* creation of TaskADC_IN2 */
-  TaskADC_IN2Handle = osThreadNew(StartTaskADC_IN2, NULL, &TaskADC_IN2_attributes);
+  *channel = 1;
+  TaskADC_IN2Handle = osThreadNew(StartTaskADC_IN1, (void*) channel, &TaskADC_IN2_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -238,7 +243,7 @@ static void MX_ADC1_Init(void)
   /** Common config
   */
   hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV8;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
   hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
@@ -269,7 +274,7 @@ static void MX_ADC1_Init(void)
   */
   /*sConfig.Channel = ADC_CHANNEL_1;
   sConfig.Rank = ADC_REGULAR_RANK_1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_47CYCLES_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_6CYCLES_5;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
   sConfig.Offset = 0;
@@ -365,7 +370,7 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void ADC_Select_CH1(void)
+/*void ADC_Select_CH1(void)
 {
   ADC_ChannelConfTypeDef sConfig = {0};
   sConfig.Channel = ADC_CHANNEL_1;
@@ -393,7 +398,33 @@ void ADC_Select_CH2(void)
   {
     Error_Handler();
   }
+}*/
+
+void ADC_Select_CH(void)
+{
+  ADC_ChannelConfTypeDef sConfig = {0};
+  if (*channel == 0)
+  {
+	sConfig.Channel = ADC_CHANNEL_1;
+  }
+  else
+  {
+	sConfig.Channel = ADC_CHANNEL_2;
+  }
+  //{sConfig.Channel = ADC_CHANNEL_1 : sConfig.Channel = ADC_CHANNEL_2;
+
+
+  sConfig.Rank = ADC_REGULAR_RANK_1;
+  sConfig.SamplingTime = ADC_SAMPLETIME_6CYCLES_5;
+  sConfig.SingleDiff = ADC_SINGLE_ENDED;
+  sConfig.OffsetNumber = ADC_OFFSET_NONE;
+  sConfig.Offset = 0;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
 }
+
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_StartTaskADC_IN1 */
@@ -412,10 +443,10 @@ void StartTaskADC_IN1(void *argument)
 	//HAL_ADC_PollForConversion(&hadc1, 10);
 	//printf("%s \n", "ADC Input 1");
 	//msg[] = "Hai";
-	ADC_Select_CH1();
+	ADC_Select_CH();
 	HAL_ADC_Start(&hadc1);
 	HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
-	adc[0] = HAL_ADC_GetValue(&hadc1);
+	adc[*channel] = HAL_ADC_GetValue(&hadc1);
 	HAL_ADC_Stop(&hadc1);
     osDelay(50);
     //sprintf(msg,"%hu\r\n",adc[0]);
@@ -433,13 +464,13 @@ void StartTaskADC_IN1(void *argument)
 * @retval None
 */
 /* USER CODE END Header_StartTaskADC_IN2 */
-void StartTaskADC_IN2(void *argument)
+/*void StartTaskADC_IN2(void *argument)
 {
   /* USER CODE BEGIN StartTaskADC_IN2 */
   //HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
   //adc[1] = HAL_ADC_GetValue(&hadc1);
   /* Infinite loop */
-  for(;;)
+/*  for(;;)
   {
 	ADC_Select_CH2();
 	HAL_ADC_Start(&hadc1);
@@ -449,7 +480,7 @@ void StartTaskADC_IN2(void *argument)
     osDelay(50);
   }
   /* USER CODE END StartTaskADC_IN2 */
-}
+//}
 
 /**
   * @brief  Period elapsed callback in non blocking mode
