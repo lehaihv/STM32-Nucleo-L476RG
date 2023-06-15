@@ -29,12 +29,25 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 /* Define the structure type that will be passed on the queue. */
+/* Define an enumerated type used to identify the source of the data. */
+typedef enum
+{
+  eSender1,
+  eSender2
+} DataSource_t;
+/* Define the structure type that will be passed on the queue. */
 typedef struct
 {
-  unsigned char ucValue;
-  unsigned char ucSource;
-} xData;
-
+  uint8_t ucValue;
+  DataSource_t eDataSource;
+} Data_t;
+/* Declare two variables of type Data_t that will be passed on the queue. */
+//static const
+Data_t xStructsToSend[2] =
+{
+  { 100, eSender1 }, /* Used by Sender1. */
+  { 200, eSender2 } /* Used by Sender2. */
+};
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -78,11 +91,7 @@ const osMessageQueueAttr_t myQueue01_attributes = {
 };
 /* USER CODE BEGIN PV */
 /* Declare two variables of type xData that will be passed on the queue. */
-static const xData xStructsToSend[2] =
-{
-  {100, mainSENDER_1}, /* Used by Sender1. */
-  {200, mainSENDER_2} /* Used by Sender2. */
-};
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -159,7 +168,7 @@ int main(void)
 
   /* Create the queue(s) */
   /* creation of myQueue01 */
-  myQueue01Handle = osMessageQueueNew (3, sizeof(xData), &myQueue01_attributes);
+  myQueue01Handle = osMessageQueueNew (3, sizeof(Data_t), &myQueue01_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -333,21 +342,21 @@ void StartSender1(void *argument)
 {
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
-  portBASE_TYPE xStatus;
-  const portTickType xTicksToWait = 100 / portTICK_RATE_MS;
+  BaseType_t osStatus_t;
+  const TickType_t xTicksToWait = pdMS_TO_TICKS( 100 );
   for(;;)
   {
-    xStatus = xQueueSendToBack( myQueue01Handle, argument, xTicksToWait );
-	if( xStatus != pdPASS )
+	osStatus_t = osMessageQueuePut( myQueue01Handle, argument, 0, xTicksToWait);
+    if( osStatus_t != osOK )
 	  {
 	  /* The send operation could not complete, even after waiting for 100ms.
 	  This must be an error as the receiving task should make space in the
 	  queue as soon as both sending tasks are in the Blocked state. */
-	  printf( "Could not send to the queue.\n" );
+	  printf("%s", "Could not send to the queue.\r\n");
 	  }
 	  /* Allow the other sender task to execute. */
-	  taskYIELD();
-    osDelay(1);
+    //taskYIELD();
+    //osDelay(1);
   }
   /* USER CODE END 5 */
 }
@@ -363,9 +372,21 @@ void StartSender2(void *argument)
 {
   /* USER CODE BEGIN StartSender2 */
   /* Infinite loop */
+  BaseType_t osStatus_t;
+  const TickType_t xTicksToWait = pdMS_TO_TICKS( 100 );
   for(;;)
   {
-    osDelay(1);
+	osStatus_t = osMessageQueuePut( myQueue01Handle, argument, 0, xTicksToWait);
+    if( osStatus_t != osOK )
+	  {
+	    /* The send operation could not complete, even after waiting for 100ms.
+	  	This must be an error as the receiving task should make space in the
+	  	queue as soon as both sending tasks are in the Blocked state. */
+	  	printf("%s", "Could not send to the queue.\r\n");
+	  }
+	/* Allow the other sender task to execute. */
+	//taskYIELD();
+    //osDelay(1);
   }
   /* USER CODE END StartSender2 */
 }
@@ -381,9 +402,35 @@ void StartReceiver(void *argument)
 {
   /* USER CODE BEGIN StartReceiver */
   /* Infinite loop */
+  Data_t xReceivedStructure;
+  BaseType_t osStatus_t;
   for(;;)
   {
-    osDelay(1);
+    if( osMessageQueueGetCount(myQueue01Handle) != 3 )
+	  {
+	    printf("Queue should have been full!\r\n");
+	  }
+    osStatus_t = osMessageQueueGet(myQueue01Handle, &(xReceivedStructure), 0, 0);
+    if( osStatus_t == osOK )
+      {
+        /* Data was successfully received from the queue, print out the received
+        value and the source of the value. */
+        if( xReceivedStructure.eDataSource == eSender1 )
+          {
+            printf("%s%d\n", "From Sender 1 = ", xReceivedStructure.ucValue );
+          }
+        else
+          {
+        	printf("%s%d\n", "From Sender 2 = ", xReceivedStructure.ucValue );
+          }
+      }
+    else
+      {
+        /* Nothing was received from the queue. This must be an error as this
+        task should only run when the queue is full. */
+    	printf("%s", "Could not receive from the queue.\r\n" );
+      }
+    //osDelay(1);
   }
   /* USER CODE END StartReceiver */
 }

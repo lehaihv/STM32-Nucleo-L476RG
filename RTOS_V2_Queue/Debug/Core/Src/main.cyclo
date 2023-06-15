@@ -1,0 +1,11 @@
+core_cm4.h:2059:26:ITM_SendChar	4
+main.c:111:5:_write	2
+main.c:125:5:main	1
+main.c:213:6:SystemClock_Config	4
+main.c:263:13:MX_USART2_UART_Init	2
+main.c:298:13:MX_GPIO_Init	1
+main.c:341:6:StartSender1	2
+main.c:371:6:StartSender2	2
+main.c:401:6:StartReceiver	4
+main.c:446:6:HAL_TIM_PeriodElapsedCallback	2
+main.c:463:6:Error_Handler	1
