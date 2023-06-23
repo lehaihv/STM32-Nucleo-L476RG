@@ -56,6 +56,12 @@ default.size.stdout \
 OBJDUMP_LIST += \
 RTOS_V2_Queue.list \
 
+OBJCOPY_HEX += \
+RTOS_V2_Queue.hex \
+
+OBJCOPY_BIN += \
+RTOS_V2_Queue.bin \
+
 
 # All Target
 all: main-build
@@ -64,8 +70,8 @@ all: main-build
 main-build: RTOS_V2_Queue.elf secondary-outputs
 
 # Tool invocations
-RTOS_V2_Queue.elf RTOS_V2_Queue.map: $(OBJS) $(USER_OBJS) /home/haile/Desktop/GitHub/STM32-Nucleo-L476RG/RTOS_V2_Queue/STM32L476RGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "RTOS_V2_Queue.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/haile/Desktop/GitHub/STM32-Nucleo-L476RG/RTOS_V2_Queue/STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RTOS_V2_Queue.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+RTOS_V2_Queue.elf RTOS_V2_Queue.map: $(OBJS) $(USER_OBJS) D:\GitHub\STM32-Nucleo-L476RG\RTOS_V2_Queue\STM32L476RGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "RTOS_V2_Queue.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\GitHub\STM32-Nucleo-L476RG\RTOS_V2_Queue\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RTOS_V2_Queue.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -79,12 +85,22 @@ RTOS_V2_Queue.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
+RTOS_V2_Queue.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "RTOS_V2_Queue.hex"
+	@echo 'Finished building: $@'
+	@echo ' '
+
+RTOS_V2_Queue.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "RTOS_V2_Queue.bin"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
-	-$(RM) RTOS_V2_Queue.elf RTOS_V2_Queue.list RTOS_V2_Queue.map default.size.stdout
+	-$(RM) RTOS_V2_Queue.bin RTOS_V2_Queue.elf RTOS_V2_Queue.hex RTOS_V2_Queue.list RTOS_V2_Queue.map default.size.stdout
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX) $(OBJCOPY_BIN)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'
